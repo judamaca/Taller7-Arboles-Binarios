@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class BinaryTree {
     Scanner input = new Scanner(System.in);
@@ -36,32 +37,66 @@ public class BinaryTree {
         return searchRecursivo(this.root, data);
     }
 
-    public TreeNode searchRecursivo(TreeNode actual, Object data) {
+    private TreeNode searchRecursivo(TreeNode actual, Object data) {
         if (actual == null) return null;
         if (actual.data.equals(data)) return actual;
         TreeNode resultadoIzquierda =  searchRecursivo(actual.left, data);
         if (resultadoIzquierda != null) return resultadoIzquierda;
-        TreeNode resultadoDerecha = searchRecursivo(actual.right, data);
-        return resultadoDerecha;
+        return searchRecursivo(actual.right, data);
     }
 
-    public boolean insertLeft(Object parent, Object data)
-        Agrega 'data' como hijo izquierdo del nodo cuyo dato es 'parent'.
-        Devuelve false (y no modifica nada) si 'parent' no existe o si ya
-        tiene hijo izquierdo; true en otro caso.
+    public boolean insertLeft(Object parent, Object data) {
+        TreeNode parentNode =  search(parent);
+        if (parentNode == null) return false;
+        if (parentNode.left != null)  return false;
+        parentNode.left = new TreeNode(data);
+        return true;
+    }
 
-    public boolean insertRight(Object parent, Object data)
-        Igual que insertLeft, pero con el hijo derecho.
+    public boolean insertRight(Object parent, Object data) {
+        TreeNode parentNode =  search(parent);
+        if (parentNode == null) return false;
+        if (parentNode.right != null)  return false;
+        parentNode.right = new TreeNode(data);
+        return true;
+    }
 
-    public void buildTree(Scanner scanner)
-        Construye el arbol leyendo los datos con 'scanner' (en el main se le
-        pasa new Scanner(System.in)). Primero se lee la raiz y luego, por
-        niveles, el hijo izquierdo y el hijo derecho de cada nodo
-        ("Hijo izquierdo de A: ", "Hijo derecho de A: ", ...). Una linea
-        vacia o "-" significa que ese hijo no existe.
-    */
+    public void buildTree(Scanner scanner) {
+        ArrayList<TreeNode> lista = new ArrayList<>();
+        int i = 0;
 
-    /*
+        System.out.println("Ingresa el valor de la raíz (o '-' para árbol vacio):");
+        String valorRaiz = scanner.nextLine().trim();
+
+        if  (valorRaiz.equals("-") || valorRaiz.equals("")) root = null;
+        else {
+            root = new TreeNode(valorRaiz);
+            lista.add(root);
+        }
+
+        while (i < lista.size()) {
+            TreeNode actual = lista.get(i);
+
+            System.out.println("Ingresa el valor del hijo izquierdo de: " + actual.data + ". Ingresa '-' o simplemente da enter para hijo vacio): ");
+            String hijoIzquierdo = scanner.nextLine().trim();
+
+            if (!hijoIzquierdo.isEmpty() && !hijoIzquierdo.equals("-")) {
+                actual.left = new TreeNode(hijoIzquierdo);
+                lista.add(actual.left);
+            }
+
+            System.out.println("Ingresa el valor del hijo derecho de: " + actual.data + ". Ingresa '-' o simplemente da enter para hijo vacio): ");
+            String hijoDerecho = scanner.nextLine().trim();
+
+            if  (!hijoDerecho.isEmpty() && !hijoDerecho.equals("-")) {
+                actual.right = new TreeNode(hijoDerecho);
+                lista.add(actual.right);
+            }
+            i++;
+        }
+    }
+
+
     2. Visualizacion: implemente aqui
 
     public void printTree()
