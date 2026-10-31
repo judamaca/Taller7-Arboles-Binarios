@@ -97,12 +97,33 @@ public class BinaryTree {
     }
 
 
-    2. Visualizacion: implemente aqui
+    // 2. Visualizacion: implemente aqui
 
-    public void printTree()
-        Muestra el arbol en consola de forma grafica, indicando claramente
-        la relacion entre padres e hijos.
-    */
+    public void printTree() {
+        if (root == null) {
+            System.out.println("El árbol está vacío");
+            return;
+        }
+        System.out.println(root.data);
+        printTreeAux(root.left, "", true);
+        printTreeAux(root.right, "", false);
+    }
+
+    private void printTreeAux(TreeNode actual, String prefijo, boolean esIzquierdo) {
+        if (actual == null) return;
+
+        // 1. Conector y etiqueta para el nodo actual
+        String conector = esIzquierdo ? "├── " : "└── ";
+        String etiqueta = esIzquierdo ? "[L] " : "[R] ";
+
+        System.out.println(prefijo + conector + etiqueta + actual.data);
+
+        // 2. Sangría acumulada que heredan los hijos de este nodo
+        String prefijoHijos = prefijo + (esIzquierdo ? "│   " : "    ");
+
+        printTreeAux(actual.left, prefijoHijos, true);
+        printTreeAux(actual.right, prefijoHijos, false);
+    }
 
     /*
     3. Recorridos: implemente aqui. Cada recorrido debe ser una funcion
