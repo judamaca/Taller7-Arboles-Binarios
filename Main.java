@@ -38,6 +38,6 @@ public class Main {
         ==========================
         Seleccione una opcion:
         */
-        tree.printTree();
+        tree.printBalanceFactors();
     }
 }

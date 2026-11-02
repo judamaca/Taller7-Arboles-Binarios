@@ -165,8 +165,6 @@ public class BinaryTree {
         sb.append(actual.data).append(" ");
     }
 
-    4. Factores de equilibrio: implemente aqui
-
     public int height(TreeNode node) {
         if (node == null) return 0;
         int alturaIzq = height(node.left);
@@ -229,18 +227,74 @@ public class BinaryTree {
         printBalanceFactorsAux(actual.right, prefijoHijos, false);
     }
 
-    /*
-    5. Balanceo AVL: implemente aqui. Cada rotacion recibe la raiz del
-    subarbol desbalanceado y devuelve la NUEVA raiz de ese subarbol.
+    public TreeNode rotateRight(TreeNode node) {
+        if (node == null) return null;
 
-    public TreeNode rotateRight(TreeNode node)       rotacion simple a la derecha
-    public TreeNode rotateLeft(TreeNode node)        rotacion simple a la izquierda
-    public TreeNode rotateLeftRight(TreeNode node)   rotacion doble izquierda-derecha
-    public TreeNode rotateRightLeft(TreeNode node)   rotacion doble derecha-izquierda
+        TreeNode auxNewRoot = node.left;
+        TreeNode auxNode = auxNewRoot.right;
 
-    public void balance()
-        Identifica los nodos desbalanceados y aplica las rotaciones necesarias
-        hasta que el arbol sea AVL (actualiza 'root' si cambia). Debe mostrar
-        el arbol con sus factores de equilibrio antes y despues de balancear.
-    */
+        auxNewRoot.right = node;
+        node.left = auxNode;
+        return auxNewRoot;
+    }
+
+    public TreeNode rotateLeft(TreeNode node) {
+        if (node == null) return null;
+
+        TreeNode auxNewRoot = node.right;
+        TreeNode auxNode = auxNewRoot.left;
+
+        auxNewRoot.left = node;
+        node.right = auxNode;
+        return auxNewRoot;
+    }
+
+    public TreeNode rotateLeftRight(TreeNode node) {
+        if (node == null) return null;
+        node.left = rotateLeft(node.left);
+        return rotateRight(node);
+    }
+
+    public TreeNode rotateRightLeft(TreeNode node) {
+        if (node == null) return null;
+        node.right = rotateRight(node.right);
+        return rotateLeft(node);
+    }
+
+    public void balance() {
+        System.out.println("=== ÁRBOL ANTES DEL BALANCEO ===");
+        printBalanceFactors();
+
+        root = balanceAux(root);
+
+        System.out.println("\n=== ÁRBOL DESPUÉS DEL BALANCEO ===");
+        printBalanceFactors();
+    }
+
+    private TreeNode balanceAux(TreeNode actual) {
+        if (actual == null) return null;
+
+        actual.left = balanceAux(actual.left);
+        actual.right = balanceAux(actual.right);
+
+        int fe = balanceFactor(actual);
+
+        if (fe < -1) {
+            if (balanceFactor(actual.left) <= 0) {
+                actual = rotateRight(actual);
+            } else {
+                actual = rotateLeftRight(actual);
+            }
+        }
+
+        if (fe > 1) {
+            if (balanceFactor(actual.right) >= 0) {
+                actual = rotateLeft(actual);
+            } else {
+                actual = rotateRightLeft(actual);
+            }
+        }
+        return actual;
+    }
+
 }
