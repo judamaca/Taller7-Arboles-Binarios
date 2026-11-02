@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -125,38 +126,108 @@ public class BinaryTree {
         printTreeAux(actual.right, prefijoHijos, false);
     }
 
-    /*
-    3. Recorridos: implemente aqui. Cada recorrido debe ser una funcion
-    RECURSIVA independiente (por ejemplo, un metodo privado que reciba un
-    TreeNode). Los metodos publicos devuelven la secuencia separada por
-    espacios, p.ej. "A B D H I E C F G".
+    public String preorder() {
+        StringBuilder sb = new StringBuilder();
+        preorderAux(root, sb);
+        return sb.toString().trim();
+    }
 
-    public String preorder()
-    public String inorder()
-    public String postorder()
-    */
+    private void preorderAux(TreeNode actual, StringBuilder sb) {
+        if  (actual == null) return;
+        sb.append(actual.data).append(" ");
+        preorderAux(actual.left, sb);
+        preorderAux(actual.right, sb);
+    }
 
-    /*
+    public String inorder() {
+        StringBuilder sb = new StringBuilder();
+        inorderAux(root, sb);
+        return sb.toString().trim();
+    }
+
+    private void inorderAux(TreeNode actual, StringBuilder sb) {
+        if  (actual == null) return;
+        inorderAux(actual.left, sb);
+        sb.append(actual.data).append(" ");
+        inorderAux(actual.right, sb);
+    }
+
+    public String postorder() {
+        StringBuilder sb = new StringBuilder();
+        postorderAux(root, sb);
+        return sb.toString().trim();
+    }
+
+    private void postorderAux(TreeNode actual, StringBuilder sb) {
+        if  (actual == null) return;
+        postorderAux(actual.left, sb);
+        postorderAux(actual.right, sb);
+        sb.append(actual.data).append(" ");
+    }
+
     4. Factores de equilibrio: implemente aqui
 
-    public int height(TreeNode node)
-        Altura del subarbol que empieza en 'node' (null tiene altura 0 y una
-        hoja altura 1).
+    public int height(TreeNode node) {
+        if (node == null) return 0;
+        int alturaIzq = height(node.left);
+        int alturaDer = height(node.right);
+        return 1 + Math.max(alturaIzq, alturaDer);
+    }
 
-    public int balanceFactor(TreeNode node)
-        Factor de equilibrio de 'node': height(node.right) - height(node.left).
+    public int balanceFactor(TreeNode node) {
+        if (node == null) return 0;
+        return height(node.right) - height(node.left);
+    }
 
-    public boolean isBalanced()
-        true si TODOS los nodos tienen factor de equilibrio -1, 0 o 1.
+    public boolean isBalanced() {
+        return isBalancedAux(root);
+    }
 
-    public List<Object> unbalancedNodes()
-        Lista con los datos de los nodos cuyo factor de equilibrio es menor
-        que -1 o mayor que 1 (los que requieren balanceo).
+    private boolean isBalancedAux(TreeNode node) {
+        if (node == null) return true;
+        if (Math.abs(balanceFactor(node)) > 1) return false;
+        return isBalancedAux(node.left) && isBalancedAux(node.right);
+    }
 
-    public void printBalanceFactors()
-        Muestra el arbol en consola indicando en cada nodo su factor de
-        equilibrio.
-    */
+    public List<Object> unbalancedNodes() {
+        List<Object> lista = new ArrayList<>();
+        unbalancedNodesAux(root, lista);
+        return lista;
+    }
+
+    private void unbalancedNodesAux(TreeNode node,  List<Object> lista) {
+        if (node == null) return;
+        if (Math.abs(balanceFactor(node)) > 1) lista.add(node.data);
+        unbalancedNodesAux(node.left, lista);
+        unbalancedNodesAux(node.right, lista);
+    }
+
+    public void printBalanceFactors() {
+        if (root == null) {
+            System.out.println("El árbol está vacío");
+            return;
+        }
+        System.out.println(root.data + " (fe = " + balanceFactor(root) + ")");
+        printBalanceFactorsAux(root.left, "", true);
+        printBalanceFactorsAux(root.right, "", false);
+    }
+
+    private void printBalanceFactorsAux(TreeNode actual, String prefijo, boolean esIzquierdo) {
+        if (actual == null) return;
+
+        // 1. Conector y etiqueta para el nodo actual
+        String conector = esIzquierdo ? "├── " : "└── ";
+        String etiqueta = esIzquierdo ? "[L] " : "[R] ";
+        String fe = " (fe = " + balanceFactor(actual) + ")";
+
+        System.out.println(prefijo + conector + etiqueta + actual.data + fe);
+
+        // 2. Sangría acumulada que heredan los hijos de este nodo
+        String prefijoHijos = prefijo + (esIzquierdo ? "│   " : "    ");
+
+        printBalanceFactorsAux(actual.left, prefijoHijos, true);
+        printBalanceFactorsAux(actual.right, prefijoHijos, false);
+    }
 
     /*
     5. Balanceo AVL: implemente aqui. Cada rotacion recibe la raiz del
